@@ -12,6 +12,7 @@
 		147E7F471C7A01B4007F7E97 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 147E7F451C7A01B4007F7E97 /* Main.storyboard */; };
 		147E7F491C7A01B4007F7E97 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 147E7F481C7A01B4007F7E97 /* Assets.xcassets */; };
 		147E7F4C1C7A01B4007F7E97 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 147E7F4A1C7A01B4007F7E97 /* LaunchScreen.storyboard */; };
+		147E7F541C7A04AD007F7E97 /* MemeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147E7F531C7A04AD007F7E97 /* MemeModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		147E7F481C7A01B4007F7E97 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		147E7F4B1C7A01B4007F7E97 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		147E7F4D1C7A01B4007F7E97 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		147E7F531C7A04AD007F7E97 /* MemeModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemeModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +57,7 @@
 			isa = PBXGroup;
 			children = (
 				147E7F411C7A01B4007F7E97 /* AppDelegate.swift */,
+				147E7F531C7A04AD007F7E97 /* MemeModel.swift */,
 				147E7F431C7A01B4007F7E97 /* ViewController.swift */,
 				147E7F451C7A01B4007F7E97 /* Main.storyboard */,
 				147E7F481C7A01B4007F7E97 /* Assets.xcassets */,
@@ -96,6 +99,7 @@
 				TargetAttributes = {
 					147E7F3D1C7A01B4007F7E97 = {
 						CreatedOnToolsVersion = 7.2.1;
+						DevelopmentTeam = FV2ELU66T4;
 					};
 				};
 			};
@@ -136,6 +140,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				147E7F441C7A01B4007F7E97 /* ViewController.swift in Sources */,
+				147E7F541C7A04AD007F7E97 /* MemeModel.swift in Sources */,
 				147E7F421C7A01B4007F7E97 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -249,10 +254,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = MemeMe1/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.geoffreyching.MemeMe1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -260,10 +268,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = MemeMe1/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.geoffreyching.MemeMe1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -286,6 +297,7 @@
 				147E7F521C7A01B4007F7E97 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
