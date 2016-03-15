@@ -97,11 +97,25 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 	}
 	
 	
-	@IBAction func openCamera(){
-		// open UIImageSelector
+	@IBAction func cancelReset(sender: AnyObject) {
+		if(!imageSelected.hidden){
+			imageSelected.hidden = true
+			instructionText.hidden = false
+			topText.hidden = true
+			bottomText.hidden = true
+			shareButton.enabled = false
+		}
 		
-		// set imageSelected
-		// update UIImageView
+		topText.text = ""
+		bottomText.text = ""
+		
+		topText.resignFirstResponder()
+		bottomText.resignFirstResponder()
+		
+	}
+	
+	
+	@IBAction func openCamera(){
 		
 		imageSelector.allowsEditing = true
 		imageSelector.sourceType = .Camera
@@ -110,10 +124,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 	}
 	
 	@IBAction func openImageSelector(){
-		// open UIImageSelector
-		
-		// set imageSelected
-		// update UIImageView
 		
 		imageSelector.allowsEditing = true
 		imageSelector.sourceType = .PhotoLibrary
@@ -122,20 +132,18 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 	}
 	
 	@IBAction func share(){
-		// save here
 		
+		topText.resignFirstResponder()
+		bottomText.resignFirstResponder()
+		
+		
+		// paramters are passed to MemeModel, which constructs the memed image
 		let memed = MemeModel(image: imageSelected.image!, topText: topText.attributedText!, bottomText: bottomText.attributedText!, width:imageWidth, height:imageHeight)
 		
-		topText.hidden = true
-		bottomText.hidden = true
+		// launch activity view controller to share memed image
+		let aVC = UIActivityViewController(activityItems: [memed.memeImage], applicationActivities: nil)
 		
-		imageSelected.image = memed.memeImage
-		
-		print("done with image")
-		
-		//let aVC = UIActivityViewController(activityItems: [], applicationActivities: nil)
-		
-		//self.presentViewController(aVC, animated: true, completion: nil)
+		self.presentViewController(aVC, animated: true, completion: nil)
 	}
 	
 	
@@ -172,13 +180,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 		let viewRatio = imageSelected.frame.size.width / imageSelected.frame.size.height;
 		
 		
-		
-		/*textTopLeftConstraint.active = false
-		textTopRightConstraint.active = false
-		textTopTopConstraint.active = false*/
-		
-		if(imageRatio < viewRatio)
-		{
+		if(imageRatio < viewRatio){
 			let scale = imageSelected.frame.size.height / image.size.height;
 			
 			imageWidth = scale * image.size.width;
@@ -195,11 +197,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 			textBottomRightConstraint.constant = imageTopLeftX + 10
 			textBottomBottomConstraint.constant = -20
 			
-			
-			//return CGRectMake(topLeftX, 0, width, imageView.frame.size.height);
-		}
-		else
-		{
+		}else{
 			let scale = imageSelected.frame.size.width / image.size.width;
 			
 			imageWidth = imageSelected.frame.size.width;
@@ -217,19 +215,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 			textBottomBottomConstraint.constant = -20 - imageTopLeftY
 			
 			
-			//return CGRectMake(0, topLeftY, imageView.frame.size.width, height);
 		}
-		/*textTopLeftConstraint.active = true
-		textTopRightConstraint.active = true
-		textTopTopConstraint.active = true*/
-		
-		print(textTopLeftConstraint.constant)
-		print(textTopRightConstraint.constant)
-		print(textTopTopConstraint.constant)
-		
-		print(textBottomLeftConstraint.constant)
-		print(textBottomRightConstraint.constant)
-		print(textBottomBottomConstraint.constant)
 		
 		self.view.sendSubviewToBack(imageSelected)
 	}
