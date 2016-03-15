@@ -98,6 +98,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 	
 	
 	@IBAction func cancelReset(sender: AnyObject) {
+		doCancelReset()
+	}
+	
+	func doCancelReset(){
 		if(!imageSelected.hidden){
 			imageSelected.hidden = true
 			instructionText.hidden = false
@@ -111,7 +115,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 		
 		topText.resignFirstResponder()
 		bottomText.resignFirstResponder()
-		
 	}
 	
 	
@@ -150,6 +153,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 	// UIImagePickerControllerDelegate
 	
 	func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
+		doCancelReset()
+		
+		
 		imageSelected.image = image
 		
 		if(imageSelected.hidden){
@@ -162,7 +168,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 		
 		findPositionMoveText()
 		
+		
+		
 		dismissViewControllerAnimated(true, completion: nil)
+		
 	}
 	func imagePickerControllerDidCancel(picker: UIImagePickerController) {
 		dismissViewControllerAnimated(true, completion: nil)
@@ -265,10 +274,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 		
 		let kHeight = getKeyboardHeight(notification)
 		
+		
 		// shift view for keyboard if keyboard is in the way
 		if(kHeight > 44+imageTopLeftY){
 			viewShiftAmount = kHeight-44-imageTopLeftY
-			view.frame.origin.y -= viewShiftAmount
+			view.bounds.origin.y += viewShiftAmount
 		}
 	}
 	
@@ -278,7 +288,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 		
 		// unshift view if keyboard shifted it
 		if(viewShiftAmount > 0){
-			view.frame.origin.y += viewShiftAmount
+			view.bounds.origin.y -= viewShiftAmount
 			viewShiftAmount = 0
 		}
 		
