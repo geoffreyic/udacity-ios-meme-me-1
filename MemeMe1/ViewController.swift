@@ -48,6 +48,14 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 			cameraButton.enabled = false
 		}
 		
+		initTextField(topText, placeholder: "TOP TEXT")
+		initTextField(bottomText, placeholder: "BOTTOM TEXT")
+		
+	}
+	
+	
+	func initTextField(textField: UITextField, placeholder: String){
+		
 		let mutPar = NSMutableParagraphStyle()
 		mutPar.alignment = .Center
 		
@@ -60,7 +68,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 			NSParagraphStyleAttributeName: mutPar
 		]
 		
-		
 		let placeholderStrokeTextAttributes: [String: AnyObject] = [
 			NSStrokeColorAttributeName : UIColor.whiteColor(),
 			NSForegroundColorAttributeName : UIColor.grayColor(),
@@ -69,17 +76,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 			NSParagraphStyleAttributeName: mutPar
 		]
 		
-		topText.adjustsFontSizeToFitWidth = true;
-		topText.minimumFontSize = 0
-		topText.defaultTextAttributes = strokeTextAttributes
-		topText.attributedPlaceholder = NSAttributedString(string: "TOP TEXT", attributes: placeholderStrokeTextAttributes)
-		topText.delegate = self
-		
-		bottomText.adjustsFontSizeToFitWidth = true;
-		bottomText.minimumFontSize = 0
-		bottomText.defaultTextAttributes = strokeTextAttributes
-		bottomText.attributedPlaceholder = NSAttributedString(string: "BOTTOM TEXT", attributes: placeholderStrokeTextAttributes)
-		bottomText.delegate = self
+		textField.adjustsFontSizeToFitWidth = true
+		textField.minimumFontSize = 0
+		textField.defaultTextAttributes = strokeTextAttributes
+		textField.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: placeholderStrokeTextAttributes)
+		textField.delegate = self
 		
 	}
 	
@@ -119,17 +120,17 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 	
 	
 	@IBAction func openCamera(){
-		
-		imageSelector.allowsEditing = true
-		imageSelector.sourceType = .Camera
-		
-		presentViewController(imageSelector, animated: true, completion: nil)
+		openCameraOrImageSelector(.Camera)
 	}
 	
 	@IBAction func openImageSelector(){
+		openCameraOrImageSelector(.PhotoLibrary)
+	}
+	
+	func openCameraOrImageSelector(type:UIImagePickerControllerSourceType){
 		
 		imageSelector.allowsEditing = true
-		imageSelector.sourceType = .PhotoLibrary
+		imageSelector.sourceType = type
 		
 		presentViewController(imageSelector, animated: true, completion: nil)
 	}
@@ -141,12 +142,103 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 		
 		
 		// paramters are passed to MemeModel, which constructs the memed image
-		let memed = MemeModel(image: imageSelected.image!, topText: topText.attributedText!, bottomText: bottomText.attributedText!, width:imageWidth, height:imageHeight)
+		let memedImage = generateMemedImage()
 		
 		// launch activity view controller to share memed image
-		let aVC = UIActivityViewController(activityItems: [memed.memeImage], applicationActivities: nil)
+		let aVC = UIActivityViewController(activityItems: [memedImage], applicationActivities: nil)
+		
+		aVC.completionWithItemsHandler = {activityType, completed, returnedItems, activityError in
+			if(completed){
+				_ = MemeModel(image: self.imageSelected.image!, topText: self.topText.attributedText!.string, bottomText: self.bottomText.attributedText!.string, memeImage:  memedImage)
+			}
+		}
 		
 		self.presentViewController(aVC, animated: true, completion: nil)
+	}
+	
+	
+	func generateMemedImage() -> UIImage{
+		
+		let localImage = imageSelected.image!
+		let bottomAttrText = bottomText.attributedText!
+		let topAttrText = topText.attributedText!
+		
+		var memeImage: UIImage
+		
+		if(topText.attributedText!.string.characters.count == 0 && bottomText.attributedText!.string.characters.count == 0){
+			return localImage
+		}
+		
+		
+		let range = NSMakeRange(0, 0)
+		
+		let scale:CGFloat = localImage.size.width / imageWidth
+		
+		let mutPar = NSMutableParagraphStyle()
+		mutPar.alignment = .Center
+		
+		
+		
+		// idea for drawing in the image from http://stackoverflow.com/questions/25302799/add-text-on-uiimage
+		
+		UIGraphicsBeginImageContext(CGSize(width: localImage.size.width, height: localImage.size.height))
+		
+		localImage.drawInRect(CGRectMake(0, 0, localImage.size.width, localImage.size.height))
+		
+		
+		if(topAttrText.string.characters.count > 0){
+			
+			let topTextNew = topAttrText.mutableCopy()
+			let fontTop:UIFont = topAttrText.attribute(NSFontAttributeName, atIndex: NSMaxRange(range), effectiveRange: nil) as! UIFont
+			let fontTopSize:CGFloat = fontTop.pointSize
+			
+			
+			
+			let strokeTextTopAttributes: [String: AnyObject] = [
+				NSStrokeColorAttributeName : UIColor.blackColor(),
+				NSForegroundColorAttributeName : UIColor.whiteColor(),
+				NSStrokeWidthAttributeName : -2.0,
+				NSFontAttributeName: UIFont(name: "HelveticaNeue-CondensedBlack", size: fontTopSize*scale)!,
+				NSParagraphStyleAttributeName: mutPar
+			]
+			
+			topTextNew.setAttributes(strokeTextTopAttributes, range: NSMakeRange(0, topTextNew.length))
+			
+			
+			// draw top text
+			let rectTop = CGRectMake(10*scale, 20*scale, localImage.size.width-(20*scale), 35*scale)
+			topTextNew.drawInRect(rectTop)
+		}
+		
+		
+		if(bottomAttrText.string.characters.count > 0){
+			let bottomTextNew = bottomAttrText.mutableCopy()
+			let fontBottom:UIFont = bottomAttrText.attribute(NSFontAttributeName, atIndex: NSMaxRange(range), effectiveRange: nil) as! UIFont
+			let fontBottomSize:CGFloat = fontBottom.pointSize
+			
+			
+			let strokeTextBottomAttributes: [String: AnyObject] = [
+				NSStrokeColorAttributeName : UIColor.blackColor(),
+				NSForegroundColorAttributeName : UIColor.whiteColor(),
+				NSStrokeWidthAttributeName : -2.0,
+				NSFontAttributeName: UIFont(name: "HelveticaNeue-CondensedBlack", size: fontBottomSize*scale)!,
+				NSParagraphStyleAttributeName: mutPar
+			]
+			
+			bottomTextNew.setAttributes(strokeTextBottomAttributes, range: NSMakeRange(0, bottomTextNew.length))
+			
+			
+			
+			// draw bottom text
+			let rectBottom = CGRectMake(10*scale, localImage.size.height-20*scale-35*scale, localImage.size.width-(20*scale), 35*scale)
+			bottomTextNew.drawInRect(rectBottom)
+			
+		}
+		
+		memeImage = UIGraphicsGetImageFromCurrentImageContext()
+		UIGraphicsEndImageContext()
+		
+		return memeImage
 	}
 	
 	
@@ -154,7 +246,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 	
 	func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
 		doCancelReset()
-		
 		
 		imageSelected.image = image
 		
